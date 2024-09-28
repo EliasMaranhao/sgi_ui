@@ -45,7 +45,7 @@
         <div class="tab-content" id="myTabContent">
        
             <div class="tab-pane fade show active" id="info-pessoal-tab" role="tabpanel" aria-labelledby="info-pessoal">
-                <div class="row mt-3 mb-3">
+                <div class="row mb-3">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header text-white bg-dark"><h5>Identificação</h5></div>
@@ -53,7 +53,7 @@
                                 <div class="row mb-2">
                                     <div class="col-2">
                                         <label for="codigo">Código</label>
-                                        <input type="text" class="form-control form-control-sm" id="codigo" formControlName="codigo"/>
+                                        <input type="text" class="form-control form-control-sm" id="codigo" formControlName="id"/>
                                     </div>
 
                                     <div class="col-6">
@@ -69,26 +69,26 @@
                                     <div class="col-2">
                                         <label for="estadoCivil">Estado Civil</label>
                                         <select name="" class="form-select form-select-sm" id="estadoCivil" formControlName = "estadoCivil">
-                                            <option value="Casado">Casado</option>
-                                            <option value="Solteiro">Solteiro</option>
-                                            <option value="Divorciado">Divorciado</option>
+                                            <option value="">Selecione um opção</option>
+                                            <option *ngFor="let estadoCivil of optionsEstadoCivil" [value]="estadoCivil">{{estadoCivil}}</option>
+                    
                                         </select>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-4">
-                                        <label for="estadoCivil">Gênero</label>
-                                        <select name="" class="form-select form-select-sm" id="estadoCivil" formControlName = "genero">
-                                            <option value="MASCULINO">Masculino</option>
-                                            <option value="FEMININO">Feminino</option>
+                                        <label for="genero">Gênero</label>
+                                        <select name="" class="form-select form-select-sm" id="genero" formControlName = "genero">
+                                            <option value="">Selecione uma opção</option>
+                                            <option *ngFor="let genero of optionsGenero" [value]="genero">{{genero}}</option>
                                         </select>
                                     </div>
 
                                     <div class="col-4" formGroupName = "documento">
                                         <label for="tipoDocumento">Tipo documento</label>
                                         <select name="" class="form-select form-select-sm" id="tipoDocumento" formControlName = "tipoDocumento">
-                                            <option value="CPF">Cpf</option>
-                                            <option value="IDENTIDADE">Identidade</option>
+                                            <option value="">Selecione uma opção</option>
+                                            <option *ngFor="let tipoDocumento of optionsTipoDocumento" [value]="tipoDocumento">{{tipoDocumento}}</option>
                                         </select>
                                     </div>
 
@@ -105,7 +105,7 @@
             </div>
       
             <div class="tab-pane fade" id="info-endereco-tab" role="tabpanel" aria-labelledby="info-endereco">
-                <div class="row mt-3 mb-3">
+                <div class="row mb-3">
                     <div class="col-12">
                         <div class="card" formGroupName = "endereco">
                             <div class="card-header text-white bg-dark"><h5>Endereço</h5></div>
@@ -144,9 +144,9 @@
                                             <div class="col-12">
                                                 <label for="estado">Estado</label>
                                                 <select name="" class="form-select form-select-sm" id="estado" formControlName = "estado">
-                                                    <option value="Casado">RJ - Rio de Janeiro</option>
-                                                    <option value="Solteiro">ES - Espírito Santo</option>
-                                                    <option value="Divorciado">MG - Minas Gerais</option>
+                                                    <option value="Rio de Janeiro">RJ - Rio de Janeiro</option>
+                                                    <option value="Espírito Santo">ES - Espírito Santo</option>
+                                                    <option value="Minas Gerais">MG - Minas Gerais</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -173,7 +173,7 @@
 
             <div class="tab-pane fade" id="info-ecle-tab" role="tabpanel" aria-labelledby="info-ecle">
           
-                <div class="row mt-3 mb-3">
+                <div class="row mb-3">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header text-white bg-dark"><h5>Informações gerais</h5></div>
@@ -197,11 +197,11 @@
 
                                     <div class="col-3">
                                         <label for="congregacao">Congregação</label>
-                                        <select name="" class="form-select form-select-sm" id="congregacao" formControlName = "igreja">
+                                        <select name="" class="form-select form-select-sm" id="congregacao" formControlName = "igrejaId">
                                             <option value="">Selecione uma opção</option>
-                                            <option value="Ebenezer">Ebenezer</option>
-                                            <option value="Val de Jaboque">Val de Jaboque</option>
-                                            <option value="Lírios do Vale">Lírios do Vale</option>
+                                            <option value="1">Ebenezer</option>
+                                            <option value="2">Val de Jaboque</option>
+                                            <option value="3">Lírios do Vale</option>
                                         </select>
                                     </div>
 
@@ -209,9 +209,7 @@
                                         <label for="situacao">Situação atual</label>
                                         <select name="" class="form-select form-select-sm" id="situacao" formControlName = "situacaoMembro">
                                             <option value="">Selecione uma opção</option>
-                                            <option value="Em comunhão">Em comunhão</option>
-                                            <option value="Fora da comunhão">Fora da comunhão</option>
-                                            <option value="Pediu carta">Pediu carta</option>
+                                            <option *ngFor="let s of optionsSituacaoMembro" [value]="s">{{s}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -223,11 +221,11 @@
                                             <span class="h6">Veio de outra denominação</span>
                                             <div class="col-12">
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="veioOutraIgreja" id="inlineRadio1" value="option1" formControlName = "veioOutraIgreja">
+                                                    <input class="form-check-input" type="radio" name="veioOutraIgreja" id="inlineRadio1" [value]="true" formControlName = "veioOutraIgreja">
                                                     <label class="form-check-label" for="inlineRadio1">Sim</label>
                                                   </div>
                                                   <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="veioOutraIgreja" id="inlineRadio2" value="option2" formControlName = "veioOutraIgreja">
+                                                    <input class="form-check-input" type="radio" name="veioOutraIgreja" id="inlineRadio2" [value]="false" formControlName = "veioOutraIgreja">
                                                     <label class="form-check-label" for="inlineRadio2">Não</label>
                                                   </div>
                                             </div>
@@ -235,7 +233,7 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <label for="denominacaoOrigem">Informe a denominação de origem</label>
-                                                <input type="text" class="form-control form-control-sm" id="denominacaoOrigem" formControlName = "igrejaOrigem"/>
+                                                <input type="text" class="form-control form-control-sm" id="denominacaoOrigem" formControlName = "igrejaOrigem" />
                                             </div>
                                         </div>
                                     </div>
@@ -245,11 +243,11 @@
                                             <span class="h6">Veio de outro campo</span>
                                             <div class="col-12">
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="veioOutroCampo" id="inlineRadio1" value="option1" formControlName = "veioOutroCampo">
+                                                    <input class="form-check-input" type="radio" name="veioOutroCampo" id="inlineRadio1" [value]="true" formControlName = "veioOutroCampo">
                                                     <label class="form-check-label" for="inlineRadio1">Sim</label>
                                                   </div>
                                                   <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="veioOutroCampo" id="inlineRadio2" value="option2" formControlName = "veioOutroCampo">
+                                                    <input class="form-check-input" type="radio" name="veioOutroCampo" id="inlineRadio2" [value]="false" formControlName = "veioOutroCampo">
                                                     <label class="form-check-label" for="inlineRadio2">Não</label>
                                                   </div>
                                             </div>
@@ -270,19 +268,25 @@
            
             </div>
         </div>
-        <button type="submit" value="Salvar" class="btn btn-primary btn-sm" [disabled]="formularioMembro.invalid">Salvar membro</button>
+        
+        <div class="row mt-3">
+            <div class="col-12">
+                <button type="submit" value="Salvar" class="btn btn-primary btn-sm" [disabled]="formularioMembro.invalid">Salvar membro</button>
+                &nbsp;
+                <!-- modal contatos -->
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Contatos</button>
+                &nbsp;
+                <!-- modal funcoes -->
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#funcaoModal">Funções</button>
+                &nbsp;
+                <!-- modal relacionamentos -->
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#RelacionamentoModal">Relacionamentos</button>
+            </div>
+
+        </div>
     </form>
     
-    <div class="mt-3">
-        <!-- modal contatos -->
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Contatos</button>
-        &nbsp;
-        <!-- modal funcoes -->
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#funcaoModal">Funções</button>
-        &nbsp;
-        <!-- modal relacionamentos -->
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#RelacionamentoModal">Relacionamentos</button>
-    </div>
+
 
     <!-- Modal contato-->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

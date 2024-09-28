@@ -1,14 +1,25 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { Membro } from './cadastro/model/membro';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MembroService {
-  url = "http://localhost:8080/sgi/membro";
+  private _URL = environment.url+'membro'
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  salvarMembro(){
-    
+  buscarTodosOsMembros(){
+    return this.http.get<Membro[]>(this._URL)
+  }
+
+  salvarMembro(membro: Membro){
+    return this.http.post<Membro>(this._URL, membro)
+  }
+
+  remover(id: number){
+    return this.http.delete(`${this._URL}/${id}`)
   }
 }
