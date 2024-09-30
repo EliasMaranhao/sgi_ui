@@ -12,7 +12,7 @@ export class MembroService {
   constructor(private http: HttpClient) { }
 
   buscarTodosOsMembros(){
-    return this.http.get<Membro[]>(this._URL)
+    return this.http.get<Membro[]>(this._URL);
   }
 
   salvarMembro(membro: Membro){

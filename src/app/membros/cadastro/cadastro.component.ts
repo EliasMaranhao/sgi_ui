@@ -129,8 +129,7 @@ export class CadastroComponent implements OnInit {
     if(this.formularioMembro.valid){
       const membro = this.criarMembro();
 
-      this.membroService.salvarMembro(membro).subscribe( 
-      {
+      this.membroService.salvarMembro(membro).subscribe({
         next: (response) => {
           alert('Membro salvo com sucesso!!');
         },

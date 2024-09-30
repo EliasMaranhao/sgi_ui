@@ -17,7 +17,7 @@
         </div>
     </form>
 
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-12">
             <div class="card">
                 <div class="card-header text-white bg-dark"><h5>Membros</h5></div>
@@ -27,16 +27,20 @@
                             <table class="table">
                                 <thead>
                                     <tr>
+                                        <th>Matrícula</th>
                                         <th>Nome</th>
+                                        <th>Situação</th>
+                                        <th>Data batismo</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    <tr>
-                                        <td>Vinicius Almeida</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Maria das Graças</td>
+                                    <tr *ngFor="let membro of membros">
+                                        <td>{{membro.id}}</td>
+                                        <td>{{membro.nome}}</td>
+                                        <td>{{membro.situacaoMembro}}</td>
+                                        <td>{{membro.dataBatismo}}</td>
+                                        <td><a class="btn btn-secondary btn-sm" href="#">Pesquisar</a></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -47,6 +51,6 @@
         </div>
     </div>
 
-    <a class="btn btn-primary btn-sm" routerLink="novo">Cadastrar novo membro</a>
+    <a class="btn btn-primary btn-sm" routerLink="novo">Novo</a>
 </div>
 
