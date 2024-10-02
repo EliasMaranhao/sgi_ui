@@ -195,9 +195,9 @@
                                         <input type="date" class="form-control form-control-sm" id="recebidoEm" formControlName = "dataRecebido"/>
                                     </div>
 
-                                    <div class="col-3">
+                                    <div class="col-3" formGroupName = "igreja">
                                         <label for="congregacao">Congregação</label>
-                                        <select name="" class="form-select form-select-sm" id="congregacao" formControlName = "igrejaId">
+                                        <select name="" class="form-select form-select-sm" id="congregacao" formControlName = "id">
                                             <option value="">Selecione uma opção</option>
                                             <option value="1">Ebenezer</option>
                                             <option value="2">Val de Jaboque</option>
@@ -274,13 +274,13 @@
                 <button type="submit" value="Salvar" class="btn btn-primary btn-sm" [disabled]="formularioMembro.invalid">Salvar membro</button>
                 &nbsp;
                 <!-- modal contatos -->
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Contatos</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" [disabled]="membro == undefined">Contatos</button>
                 &nbsp;
                 <!-- modal funcoes -->
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#funcaoModal">Funções</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#funcaoModal" [disabled]="membro == undefined">Funções</button>
                 &nbsp;
                 <!-- modal relacionamentos -->
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#RelacionamentoModal">Relacionamentos</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#RelacionamentoModal" [disabled]="membro == undefined">Relacionamentos</button>
             </div>
 
         </div>
@@ -290,54 +290,61 @@
 
     <!-- Modal contato-->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Contatos</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">{{membro?.nome}}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-3">
-                            <label for="tipoContato">Tipo</label>
-                            <select name="" class="form-select form-select-sm" id="tipoContato" >
-                                <option value="email">E-mail</option>
-                                <option value="telefone">Telefone</option>
-                            </select>
-                        </div>
+                    <form (ngSubmit)="salvarContato()" [formGroup]="formularioContato">
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <label for="tipoContato">Tipo</label>
+                                <select name="" class="form-select form-select-sm" id="tipoContato" formControlName = "tipoContato">
+                                    <option value="">Selecione o tipo de contato</option>
+                                    <option *ngFor="let tipoContato of optionsTipoContato" [value]="tipoContato">{{tipoContato}}</option>
+                                </select>
+                            </div>
 
-                        <div class="col-9">
-                            <label for="valor">Valor</label>
-                            <input type="email" class="form-control form-control-sm" id="valor"/>
+                            <div class="col-9">
+                                <label for="valor">Valor</label>
+                                <input  [type]="formularioContato.get('tipoContato')?.value == 'EMAIL' ? 'email' : 'text'" class="form-control form-control-sm" id="valor" formControlName = "valor"/>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-2">
-                            <button type="button" class="btn btn-primary btn-sm" id="btnAddContato">Adicionar</button>
+                    
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary btn-sm" id="btnAddContato" [disabled]="formularioContato.invalid">Adicionar</button>
+                            </div>
                         </div>
-                    </div>
-
+                    </form>
                     <div class="card">
                         <div class="card-header text-white bg-dark"><h5>Contatos</h5></div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table">
+                                    <table class="table table-sm table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>tipo</th>
+                                                <th>Tipo</th>
                                                 <th>Contato</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>email</td>
-                                                <td>email&amp;.com</td>
-                                            </tr>
-                                            <tr>
-                                                <td>telefone</td>
-                                                <td>21945092387</td>
+                                            <tr *ngFor="let contato of contatos">
+                                                <td>{{contato.tipoContato}}</td>
+                                                <td>{{contato.valor}}</td>
+                                                <td>
+                                                    &nbsp;
+                                                    <a class="btn btn-primary btn-sm" href="#">
+                                                        <i class="bi bi-pen"></i>
+                                                    </a>
+                                                    &nbsp;
+                                                    <button type="button" class="btn btn-primary btn-sm" (click)="deletarContato(contato.id)">
+                                                        <i class='bi bi-trash'></i>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>

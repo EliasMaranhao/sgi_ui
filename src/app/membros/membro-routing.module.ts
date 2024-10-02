@@ -6,6 +6,10 @@ const rotas: Routes = [
     {
         path: 'membros/novo',
         component: CadastroComponent
+    },
+    {
+        path: 'membro/:id',
+        component: CadastroComponent
     }
 ];
 

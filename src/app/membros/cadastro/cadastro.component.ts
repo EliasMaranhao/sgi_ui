@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MembroService } from '../membro.service';
-import { Denominacao, Documento, Endereco, EstadoCivil, Genero, Igreja, Membro, SituacaoMembro, TipoContato, TipoDocumento } from './model/membro';
+import { MembroService } from '../services/membro.service';
+import { Contato, Denominacao, Documento, Endereco, EstadoCivil, Genero, Igreja, Membro, SituacaoMembro, TipoContato, TipoDocumento } from './model/membro';
+import { ContatoService } from '../services/contato.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-cadastro',
@@ -11,24 +13,40 @@ import { Denominacao, Documento, Endereco, EstadoCivil, Genero, Igreja, Membro, 
 export class CadastroComponent implements OnInit {
 
   formularioMembro!: FormGroup;
+  formularioContato!: FormGroup;
+
   optionsSituacaoMembro!: string[];
   optionsGenero!: string[];
   optionsTipoContato!: string[];
   optionsTipoDocumento!: string[];
   optionsEstadoCivil!: string[];
 
-  constructor(private formBuilder: FormBuilder, 
-              private membroService: MembroService) {
+  membro?: Membro;
+  contatos?: Contato[];
 
-                this.optionsSituacaoMembro = Object.keys(SituacaoMembro);
-                this.optionsGenero = Object.keys(Genero);
-                this.optionsTipoContato = Object.keys(TipoContato);
-                this.optionsTipoDocumento = Object.keys(TipoDocumento);
-                this.optionsEstadoCivil = Object.keys(EstadoCivil);
+  constructor(private formBuilder: FormBuilder, 
+              private membroService: MembroService,
+              private contatoService: ContatoService,
+              private rotas: ActivatedRoute) {
+
+      this.optionsSituacaoMembro = Object.keys(SituacaoMembro);
+      this.optionsGenero = Object.keys(Genero);
+      this.optionsTipoContato = Object.keys(TipoContato);
+      this.optionsTipoDocumento = Object.keys(TipoDocumento);
+      this.optionsEstadoCivil = Object.keys(EstadoCivil);
   }
 
   ngOnInit(): void {
     this.configurarFormularioMembro();
+    this.configurarFormularioContato();
+
+    console.log('=================================> Membro é undefined: ' + this.membro);
+
+    //se veio do formulario de pesquisa
+    const id = this.rotas.snapshot.params['id'];
+    if(id != undefined){
+      this.buscarMembroPorId(id);
+    }
 
     this.formularioMembro.get('veioOutraIgreja')?.valueChanges.subscribe((value) => {
      
@@ -48,6 +66,14 @@ export class CadastroComponent implements OnInit {
     });
   }
 
+  configurarFormularioContato(){
+    this.formularioContato = this.formBuilder.group({
+      id: [],
+      tipoContato: [null, Validators.required],
+      valor: [null, Validators.required]
+    });
+  }
+
   configurarFormularioMembro(){
     this.formularioMembro = this.formBuilder.group({
        id: [],
@@ -62,8 +88,11 @@ export class CadastroComponent implements OnInit {
        veioOutraIgreja: [null, Validators.required],
        veioOutroCampo: [null, Validators.required],
        campoOrigem: [null],
-       igrejaId: [null, Validators.required],
        genero: [null, Validators.required],
+
+       igreja: this.formBuilder.group({
+        id: [null, Validators.required]
+       }),
 
        documento: this.formBuilder.group({
         tipoDocumento: [null, Validators.required],
@@ -99,7 +128,7 @@ export class CadastroComponent implements OnInit {
     membro.campoOrigem = this.formularioMembro.get('campoOrigem')?.value;
 
     let igreja = new Igreja();
-    igreja.id = this.formularioMembro.get('igrejaId')?.value;
+    igreja.id = this.formularioMembro.get('igreja')?.get('id')?.value;
 
     membro.igreja = igreja;
     membro.genero = this.formularioMembro.get('genero')?.value;
@@ -125,12 +154,25 @@ export class CadastroComponent implements OnInit {
     return membro;
   }
 
+  criarContato(): Contato{
+    let contato = new Contato();
+    contato.tipoContato = this.formularioContato.get('tipoContato')?.value;
+    contato.valor = this.formularioContato.get('valor')?.value;
+
+    let membro = new Membro();
+    membro.id = this.membro!.id;
+
+    contato.membro = membro!;
+    return contato;
+  }
+
   salvar(){
     if(this.formularioMembro.valid){
       const membro = this.criarMembro();
 
       this.membroService.salvarMembro(membro).subscribe({
         next: (response) => {
+          this.membro = response;
           alert('Membro salvo com sucesso!!');
         },
         error: (error) => {
@@ -140,4 +182,92 @@ export class CadastroComponent implements OnInit {
     }
   }
 
+  buscarMembroPorId(id: number){
+    this.membroService.buscarMembroPorId(id).subscribe({
+      next: (response) => {
+        this.membro = response;
+        this.loadMembro(this.membro);
+
+        let membro = new Membro();
+        membro.id = this.membro.id;
+
+        this.buscarContatosPorMembro(membro);
+      },
+      error: (error) => {
+        console.log(`Erro ao tentar carregar membro: ${error}`);
+      }
+    })
+  }
+
+  buscarContatosPorMembro(membro: Membro){
+    this.contatoService.buscarContatoPorMembro(membro).subscribe({
+      next: (response) => {
+        this.contatos = response;
+      },
+
+      error: (error) => {
+        console.log('Erro ao buscar contatos: ' + error)
+      }
+    });
+  }
+
+  salvarContato(){
+    if(this.formularioContato.valid){
+      const contato = this.criarContato();
+
+      this.contatoService.salvarContato(contato).subscribe({
+        next: (response) =>{
+          this.contatos = response;
+          alert('Contato salvo com sucesso!!');
+        },
+
+        error: (error) => {
+          console.log(`Falha ao cadastrar contato: ${error}`)
+        }
+      });
+    }else{
+      console.log('>>>>>>>>>>> Formulário de contato inválido');
+    }
+  }
+
+  deletarContato(id: number){
+    this.contatoService.remover(id).subscribe({
+      next: (response) => {
+        alert("Contato removido");
+
+        let membro = new Membro();
+        membro.id = this.membro?.id;
+
+        this.buscarContatosPorMembro(membro);
+        console.log(response);
+      },
+      error: (error) => {
+        console.log(`Erro ao tentar remover contato: ${error}`);
+      }
+    });
+  }
+
+  loadMembro(membro: Membro){
+    try{
+      this.formularioMembro.get('id')?.setValue(membro.id);
+      this.formularioMembro.get('nome')?.setValue(membro.nome);
+      this.formularioMembro.get('dataNascimento')?.setValue(membro.dataNascimento);
+      this.formularioMembro.get('dataConversao')?.setValue(membro.dataConversao);
+      this.formularioMembro.get('dataBatismo')?.setValue(membro.dataBatismo);
+      this.formularioMembro.get('dataRecebido')?.setValue(membro.dataRecebido);
+      this.formularioMembro.get('igrejaOrigem')?.setValue(membro.igrejaOrigem);
+      this.formularioMembro.get('estadoCivil')?.setValue(membro.estadoCivil);
+      this.formularioMembro.get('situacaoMembro')?.setValue(membro.situacaoMembro);
+      this.formularioMembro.get('veioOutraIgreja')?.setValue(membro.veioOutraIgreja);
+      this.formularioMembro.get('veioOutroCampo')?.setValue(membro.veioOutroCampo);
+      this.formularioMembro.get('campoOrigem')?.setValue(membro.campoOrigem);
+      this.formularioMembro.get('igreja')?.get('id')?.setValue(membro.igreja);
+      this.formularioMembro.get('genero')?.setValue(membro.genero);
+      this.formularioMembro.get('documento')?.setValue(membro.documento)
+      this.formularioMembro.get('endereco')?.setValue(membro.endereco);
+    }
+    catch(error){
+      console.log(error);
+    }
+  }
 }

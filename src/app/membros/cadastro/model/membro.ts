@@ -15,6 +15,7 @@ export class Membro {
     public documento!: Documento;
     public genero!: Genero;
     public endereco!: Endereco;
+    public contatos?: Contato[];
 }
 
 export class Endereco {
@@ -82,24 +83,26 @@ export enum Denominacao {
     IGREJA_DA_RESTAURACAO = 'Igreja da Restauração'
 }
 
-enum TipoParentesco {
-    IRMAO,
-    PRIMO,
-    PAI,
-    MAE,
-    AVO,
-    TIO,
-    TIA
+export enum TipoParentesco {
+    IRMAO = 'Irmão',
+    PRIMO = 'Primo',
+    PAI = 'Pai',
+    MAE = 'Mãe',
+    AVO = 'Avós',
+    TIO = 'Tio',
+    TIA = 'Tia'
 }
 
 export class Contato {
-    private tipoContato!: TipoContato;
-    private valor!: string;
+    id!: number;
+    tipoContato!: TipoContato;
+    valor!: string;
+    membro!: Membro;
 }
 
 export class Parente {
-    private nome!: string;
-    private tipoParentesco!: TipoParentesco;
+    public nome!: string;
+    public tipoParentesco!: TipoParentesco;
 }
 
 export class Igreja {
