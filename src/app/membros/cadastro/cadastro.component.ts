@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MembroService } from '../services/membro.service';
-import { Contato, Denominacao, Documento, Endereco, EstadoCivil, Genero, Igreja, Membro, Parente, SituacaoMembro, TipoContato, TipoDocumento, TipoParentesco } from './model/membro';
+import { Contato, Documento, EstadoCivil, Genero, Membro, Parente, SituacaoMembro, TipoContato, TipoDocumento, TipoParentesco } from './model/membro';
 import { ContatoService } from '../services/contato.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ParenteService } from '../services/parente.service';
+import { Cargo, Funcao, Igreja } from 'src/app/igrejas/model/igreja';
+import { Endereco } from 'src/app/model/core';
+import { IgrejaService } from 'src/app/igrejas/services/igreja.service';
+import { ConnectableObservable } from 'rxjs';
+import { FuncaoService } from 'src/app/igrejas/services/funcao.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -16,6 +21,7 @@ export class CadastroComponent implements OnInit {
   formularioMembro!: FormGroup;
   formularioContato!: FormGroup;
   formularioParente!: FormGroup;
+  formularioCargo!: FormGroup;
 
   optionsSituacaoMembro!: string[];
   optionsGenero!: string[];
@@ -27,12 +33,16 @@ export class CadastroComponent implements OnInit {
   membro?: Membro;
   contatos?: Contato[];
   parentes?: Parente[];
+  igrejas?: Igreja[];
+  funcoes?: Funcao[];
 
   constructor(private formBuilder: FormBuilder, 
               private membroService: MembroService,
               private contatoService: ContatoService,
               private rotas: ActivatedRoute,
-              private parenteService: ParenteService) {
+              private parenteService: ParenteService,
+              private igrejaService: IgrejaService,
+              private funcaoService: FuncaoService) {
 
       this.optionsSituacaoMembro = Object.keys(SituacaoMembro);
       this.optionsGenero = Object.keys(Genero);
@@ -40,12 +50,16 @@ export class CadastroComponent implements OnInit {
       this.optionsTipoDocumento = Object.keys(TipoDocumento);
       this.optionsEstadoCivil = Object.keys(EstadoCivil);
       this.optionsTipoParentesco = Object.keys(TipoParentesco);
+
+      this.buscarIgrejas();
+      this.buscarFuncoes();
   }
 
   ngOnInit(): void {
     this.configurarFormularioMembro();
     this.configurarFormularioContato();
     this.configurarFormularioParente();
+    this.configurarFormularioCargo();
 
     console.log('=================================> Membro é undefined: ' + this.membro);
 
@@ -70,6 +84,37 @@ export class CadastroComponent implements OnInit {
       }else{
         this.formularioMembro.get('campoOrigem')?.disable();
       }
+    });
+  }
+
+  buscarIgrejas(){
+    this.igrejaService.buscarIgrejas().subscribe({
+      next: (response) => {
+        this.igrejas = response;
+      },
+      error: (error) => {
+        console.log('Erro ao carregar igrejas: ' + error);
+      }
+    });
+  }
+
+  buscarFuncoes(){
+    this.funcaoService.buscarFuncoes().subscribe({
+      next: (response) => {
+        this.funcoes = response;
+      },
+      error: (error) => {
+        console.log('Erro ao carregar funcoes: ' + error);
+      }
+    });
+  }
+
+  configurarFormularioCargo(){
+    this.formularioCargo = this.formBuilder.group({
+      id: [],
+      dataPosse:[null, Validators.required],
+      dataDestituicao: [null],
+      funcao: [null, Validators.required]
     });
   }
 
@@ -125,6 +170,19 @@ export class CadastroComponent implements OnInit {
         pais: [null, Validators.required]
        })
     })
+  }
+
+  criarCargo(): Cargo{
+    let cargo = new Cargo();
+    cargo.id = this.formularioCargo.get('id')?.value;
+    cargo.dataPosse = this.formularioCargo.get('dataPosse')?.value;
+    cargo.dataDestituicao = this.formularioCargo.get('dataDestituicao')?.value;
+
+    let membro = new Membro();
+    membro.id = this.membro?.id;
+
+    cargo.membro = membro;
+    return cargo;
   }
 
   criarParente(): Parente{
@@ -250,6 +308,10 @@ export class CadastroComponent implements OnInit {
         console.log('Erro ao buscar contatos: ' + error);
       }
     });
+  }
+
+  salvarCargo(){
+
   }
 
   salvarContato(){

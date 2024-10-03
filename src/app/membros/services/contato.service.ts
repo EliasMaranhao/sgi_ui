@@ -7,7 +7,7 @@ import { Contato, Membro } from '../cadastro/model/membro';
   providedIn: 'root'
 })
 export class ContatoService {
-  private _URL = environment.url+'contato'
+  private _URL = environment.url+'contato';
 
   constructor(private http: HttpClient) { }
 

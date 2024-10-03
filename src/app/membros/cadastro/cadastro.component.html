@@ -199,9 +199,7 @@
                                         <label for="congregacao">Congregação</label>
                                         <select name="" class="form-select form-select-sm" id="congregacao" formControlName = "id">
                                             <option value="">Selecione uma opção</option>
-                                            <option value="1">Ebenezer</option>
-                                            <option value="2">Val de Jaboque</option>
-                                            <option value="3">Lírios do Vale</option>
+                                            <option *ngFor="let igreja of igrejas" [value]="igreja.id">{{igreja.nome}}</option>
                                         </select>
                                     </div>
 
@@ -336,7 +334,6 @@
                                                 <td>{{contato.tipoContato}}</td>
                                                 <td>{{contato.valor}}</td>
                                                 <td class="text-center">
-                                                    &nbsp;
                                                     <a class="btn btn-primary btn-sm" href="#">
                                                         <i class="bi bi-pen"></i>
                                                     </a>
@@ -367,10 +364,37 @@
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">{{membro?.nome}}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <form (ngSubmit)="salvarCargo()" [formGroup]="formularioCargo">
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <label for="funcao">Tipo</label>
+                                <select name="" class="form-select form-select-sm" id="funcao" formControlName = "funcao">
+                                    <option value="">Selecione a função</option>
+                                    <option *ngFor="let funcao of funcoes" [value]="funcao.id">{{funcao.nome}}</option>
+                                </select>
+                            </div>
+
+                            <div class="col-4">
+                                <label for="dataPosse">Posse</label>
+                                <input  type="date" class="form-control form-control-sm" id="dataPosse" formControlName = "dataPosse"/>
+                            </div>
+
+                            <div class="col-4">
+                                <label for="dataDestituicao">Saída</label>
+                                <input  type="date" class="form-control form-control-sm" id="dataDestituicao" formControlName = "dataDestituicao"/>
+                            </div>
+                        </div>
+                    
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary btn-sm" id="btnAddContato" [disabled]="formularioContato.invalid">Adicionar</button>
+                            </div>
+                        </div>
+                    </form>
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -393,6 +417,10 @@
                                                 <td>2024-07-09</td>
                                                 <td></td>
                                                 <td class="text-center">
+                                                    <a class="btn btn-primary btn-sm" href="#">
+                                                        <i class="bi bi-pen"></i>
+                                                    </a>
+                                                    &nbsp;
                                                     <button type="button" class="btn btn-danger btn-sm">
                                                         <i class='bi bi-trash'></i>
                                                     </button>
@@ -465,7 +493,6 @@
                                                 <td>{{parente.parentesco}}</td>
                                                 <td>{{parente.nome}}</td>
                                                 <td class="text-center">
-                                                    &nbsp;
                                                     <a class="btn btn-primary btn-sm" href="#">
                                                         <i class="bi bi-pen"></i>
                                                     </a>

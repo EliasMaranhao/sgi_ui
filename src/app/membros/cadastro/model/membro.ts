@@ -1,3 +1,6 @@
+import { Igreja } from "src/app/igrejas/model/igreja";
+import { Endereco } from "src/app/model/core";
+
 export class Membro {
     id?: number;
     nome!: string;
@@ -16,17 +19,6 @@ export class Membro {
     genero!: Genero;
     endereco!: Endereco;
     contatos?: Contato[];
-}
-
-export class Endereco {
-    rua!: string;
-    numero!: number;
-    complemento?: string;
-    bairro!: string;
-    cidade!: string;
-    estado!: string;
-    pais!: string;
-    cep!: string;
 }
 
 export enum EstadoCivil {
@@ -48,21 +40,6 @@ export enum TipoDocumento {
     PASSAPORTE = 'Passaporte'
 }
 
-export enum Cargo {
-    MEMBRO = 'Membro',
-    AUXILIAR = 'Auxiliar',
-    OBREIRO = 'Obreiro',
-    DIACONO = 'Diácono',
-    PRESBITERO = 'Presbítero',
-    EVANGELISTA = 'Evangelista',
-    BISPO = 'Bispo',
-    PASTOR = 'Pastor',
-    TESOUREIRO = 'Tesoureiro',
-    SECRETARIO = 'Secretário',
-    LIDER_LOUVOR = 'Líder do Ministério de Música',
-    MUSICO = 'Músico'
-}
-
 export enum TipoContato {
     TELEFONE = 'Telefone',
     EMAIL = 'Email'
@@ -71,16 +48,6 @@ export enum TipoContato {
 export enum Genero {
     MASCULINO = 'Masculino',
     FEMININO = 'Feminino'
-}
-
-export enum Denominacao {
-    ASSEMBLEIA_DE_DEUS = 'Assembléia de Deus',
-    BATISTA = 'Batista',
-    NOVA_VIDA = 'Nova Vida',
-    VIDA_NOVA = 'Vida Nova',
-    IGREJA_UNIVERSAL_DO_REINO_DE_DEUS = 'Igreja Universal do Reino de Deus',
-    DEUS_E_AMOR = 'Deus é Amor',
-    IGREJA_DA_RESTAURACAO = 'Igreja da Restauração'
 }
 
 export enum TipoParentesco {
@@ -109,14 +76,6 @@ export class Parente {
     nome!: string;
     parentesco!: TipoParentesco;
     membro!: Membro;
-}
-
-export class Igreja {
-    id?: number;
-    nome!: string;
-    endereco!: Endereco;
-    igrejaPai!: Igreja;
-    denominacao!: Denominacao;
 }
 
 export class Documento {
