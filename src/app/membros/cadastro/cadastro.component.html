@@ -324,7 +324,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table table-sm table-bordered table-striped">
+                                    <table class="table table-striped table-sm table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>Tipo</th>
@@ -335,13 +335,13 @@
                                             <tr *ngFor="let contato of contatos">
                                                 <td>{{contato.tipoContato}}</td>
                                                 <td>{{contato.valor}}</td>
-                                                <td>
+                                                <td class="text-center">
                                                     &nbsp;
                                                     <a class="btn btn-primary btn-sm" href="#">
                                                         <i class="bi bi-pen"></i>
                                                     </a>
                                                     &nbsp;
-                                                    <button type="button" class="btn btn-primary btn-sm" (click)="deletarContato(contato.id)">
+                                                    <button type="button" class="btn btn-danger btn-sm" (click)="deletarContato(contato.id)">
                                                         <i class='bi bi-trash'></i>
                                                     </button>
                                                 </td>
@@ -353,9 +353,11 @@
                         </div>
                     </div>
                 </div>
+                <!--
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
                 </div>
+                -->
             </div>
         </div>
     </div>
@@ -375,7 +377,7 @@
                                 <div class="card-header text-white bg-dark"><h5>Lista de funções</h5></div>
             
                                 <div class="card-body">
-                                    <table class="table">
+                                    <table class="table table-striped table-sm table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>Cargo</th>
@@ -390,19 +392,11 @@
                                                 <td>Pastor</td>
                                                 <td>2024-07-09</td>
                                                 <td></td>
-                                                <td><button type="button" class="btn btn-danger btn-sm">Excluir</button></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Líder de Juventude</td>
-                                                <td>2024-10-05</td>
-                                                <td>2024-07-09</td>
-                                                <td><button type="button" class="btn btn-danger btn-sm">Excluir</button></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Diretor Musical</td>
-                                                <td>2022-10-05</td>
-                                                <td>2024-07-09</td>
-                                                <td><button type="button" class="btn btn-danger btn-sm">Excluir</button></td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-danger btn-sm">
+                                                        <i class='bi bi-trash'></i>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -411,58 +405,75 @@
                         </div>
                     </div>
                 </div>
+                <!--
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
+                -->
             </div>
         </div>
     </div>
 
     <!-- Modal Relacionamentos-->
     <div class="modal fade" id="RelacionamentoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Relacionamentos</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">{{membro?.nome}}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <form (ngSubmit)="salvarParente()" [formGroup]="formularioParente">
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <label for="parentesco">Tipo</label>
+                                <select name="" class="form-select form-select-sm" id="parentesco" formControlName = "parentesco">
+                                    <option value="">Selecione o tipo de parentesco</option>
+                                    <option *ngFor="let tipoParentesco of optionsTipoParentesco" [value]="tipoParentesco">{{tipoParentesco}}</option>
+                                </select>
+                            </div>
+
+                            <div class="col-9">
+                                <label for="valorParentesco">Valor</label>
+                                <input  type="text" class="form-control form-control-sm" id="valorParentesco" formControlName = "valorParentesco"/>
+                            </div>
+                        </div>
                     
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <button type="submit" class="btn btn-primary btn-sm" id="btnAddParente" [disabled]="formularioParente.invalid">Adicionar</button>
+                            </div>
+                        </div>
+                    </form>
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header text-white bg-dark"><h5>Lista de funções</h5></div>
+                                <div class="card-header text-white bg-dark"><h5>Parentes</h5></div>
             
                                 <div class="card-body">
-                                    <table class="table">
+                                    <table class="table table-striped table-sm table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Cargo</th>
-                                                <th>Empossado em</th>
-                                                <th>Retirado em</th>
-                                                <th></th>
+                                                <th>Parentesco</th>
+                                                <th>Nome</th>
                                             </tr>
                                         </thead>
             
                                         <tbody>
-                                            <tr>
-                                                <td>Pastor</td>
-                                                <td>2024-07-09</td>
-                                                <td></td>
-                                                <td><button type="button" class="btn btn-danger btn-sm">Excluir</button></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Líder de Juventude</td>
-                                                <td>2024-10-05</td>
-                                                <td>2024-07-09</td>
-                                                <td><button type="button" class="btn btn-danger btn-sm">Excluir</button></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Diretor Musical</td>
-                                                <td>2022-10-05</td>
-                                                <td>2024-07-09</td>
-                                                <td><button type="button" class="btn btn-danger btn-sm">Excluir</button></td>
+                                            <tr *ngFor="let parente of parentes">
+                                                <td>{{parente.parentesco}}</td>
+                                                <td>{{parente.nome}}</td>
+                                                <td class="text-center">
+                                                    &nbsp;
+                                                    <a class="btn btn-primary btn-sm" href="#">
+                                                        <i class="bi bi-pen"></i>
+                                                    </a>
+                                                    &nbsp;
+                                                    <button type="button" class="btn btn-danger btn-sm">
+                                                        <i class='bi bi-trash'></i>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -471,10 +482,12 @@
                         </div>
                     </div>
                 </div>
+                <!--
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
+                -->
             </div>
         </div>
     </div>

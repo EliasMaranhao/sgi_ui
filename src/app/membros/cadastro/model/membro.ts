@@ -1,32 +1,32 @@
 export class Membro {
-    public id?: number;
-    public nome!: string;
-    public dataNascimento!: Date;
-    public dataConversao?: Date;
-    public dataBatismo!: Date;
-    public dataRecebido?: Date;
-    public igrejaOrigem?: string;
-    public estadoCivil!: EstadoCivil;
-    public situacaoMembro!: SituacaoMembro;
-    public veioOutraIgreja!: boolean;
-    public veioOutroCampo!: boolean;
-    public campoOrigem?: string;
-    public igreja!: Igreja;
-    public documento!: Documento;
-    public genero!: Genero;
-    public endereco!: Endereco;
-    public contatos?: Contato[];
+    id?: number;
+    nome!: string;
+    dataNascimento!: Date;
+    dataConversao?: Date;
+    dataBatismo!: Date;
+    dataRecebido?: Date;
+    igrejaOrigem?: string;
+    estadoCivil!: EstadoCivil;
+    situacaoMembro!: SituacaoMembro;
+    veioOutraIgreja!: boolean;
+    veioOutroCampo!: boolean;
+    campoOrigem?: string;
+    igreja!: Igreja;
+    documento!: Documento;
+    genero!: Genero;
+    endereco!: Endereco;
+    contatos?: Contato[];
 }
 
 export class Endereco {
-    public rua!: string;
-    public numero!: number;
-    public complemento?: string;
-    public bairro!: string;
-    public cidade!: string;
-    public estado!: string;
-    public pais!: string;
-    public cep!: string;
+    rua!: string;
+    numero!: number;
+    complemento?: string;
+    bairro!: string;
+    cidade!: string;
+    estado!: string;
+    pais!: string;
+    cep!: string;
 }
 
 export enum EstadoCivil {
@@ -48,7 +48,7 @@ export enum TipoDocumento {
     PASSAPORTE = 'Passaporte'
 }
 
-enum Cargo {
+export enum Cargo {
     MEMBRO = 'Membro',
     AUXILIAR = 'Auxiliar',
     OBREIRO = 'Obreiro',
@@ -85,12 +85,16 @@ export enum Denominacao {
 
 export enum TipoParentesco {
     IRMAO = 'Irmão',
+    IRMA = 'Irmã',
     PRIMO = 'Primo',
+    PRIMA = 'Prima',
     PAI = 'Pai',
     MAE = 'Mãe',
     AVO = 'Avós',
     TIO = 'Tio',
-    TIA = 'Tia'
+    TIA = 'Tia',
+    PADRASTO = 'Padastro',
+    MADRASTA = 'Madastra'
 }
 
 export class Contato {
@@ -101,19 +105,21 @@ export class Contato {
 }
 
 export class Parente {
-    public nome!: string;
-    public tipoParentesco!: TipoParentesco;
+    id?: number;
+    nome!: string;
+    parentesco!: TipoParentesco;
+    membro!: Membro;
 }
 
 export class Igreja {
-    public id?: number;
-    public nome!: string;
-    public endereco!: Endereco;
-    public igrejaPai!: Igreja;
-    public denominacao!: Denominacao;
+    id?: number;
+    nome!: string;
+    endereco!: Endereco;
+    igrejaPai!: Igreja;
+    denominacao!: Denominacao;
 }
 
 export class Documento {
-    public tipoDocumento!: TipoDocumento;
-    public valor!: string;
+    tipoDocumento!: TipoDocumento;
+    valor!: string;
 }

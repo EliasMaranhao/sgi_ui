@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MembroService } from '../services/membro.service';
-import { Contato, Denominacao, Documento, Endereco, EstadoCivil, Genero, Igreja, Membro, SituacaoMembro, TipoContato, TipoDocumento } from './model/membro';
+import { Contato, Denominacao, Documento, Endereco, EstadoCivil, Genero, Igreja, Membro, Parente, SituacaoMembro, TipoContato, TipoDocumento, TipoParentesco } from './model/membro';
 import { ContatoService } from '../services/contato.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ParenteService } from '../services/parente.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -14,31 +15,37 @@ export class CadastroComponent implements OnInit {
 
   formularioMembro!: FormGroup;
   formularioContato!: FormGroup;
+  formularioParente!: FormGroup;
 
   optionsSituacaoMembro!: string[];
   optionsGenero!: string[];
   optionsTipoContato!: string[];
   optionsTipoDocumento!: string[];
   optionsEstadoCivil!: string[];
+  optionsTipoParentesco!: string[];
 
   membro?: Membro;
   contatos?: Contato[];
+  parentes?: Parente[];
 
   constructor(private formBuilder: FormBuilder, 
               private membroService: MembroService,
               private contatoService: ContatoService,
-              private rotas: ActivatedRoute) {
+              private rotas: ActivatedRoute,
+              private parenteService: ParenteService) {
 
       this.optionsSituacaoMembro = Object.keys(SituacaoMembro);
       this.optionsGenero = Object.keys(Genero);
       this.optionsTipoContato = Object.keys(TipoContato);
       this.optionsTipoDocumento = Object.keys(TipoDocumento);
       this.optionsEstadoCivil = Object.keys(EstadoCivil);
+      this.optionsTipoParentesco = Object.keys(TipoParentesco);
   }
 
   ngOnInit(): void {
     this.configurarFormularioMembro();
     this.configurarFormularioContato();
+    this.configurarFormularioParente();
 
     console.log('=================================> Membro é undefined: ' + this.membro);
 
@@ -63,6 +70,14 @@ export class CadastroComponent implements OnInit {
       }else{
         this.formularioMembro.get('campoOrigem')?.disable();
       }
+    });
+  }
+
+  configurarFormularioParente(){
+    this.formularioParente = this.formBuilder.group({
+      id: [],
+      parentesco: [null, Validators.required],
+      valorParentesco: [null, Validators.required]
     });
   }
 
@@ -110,6 +125,19 @@ export class CadastroComponent implements OnInit {
         pais: [null, Validators.required]
        })
     })
+  }
+
+  criarParente(): Parente{
+    let parente = new Parente();
+    parente.nome = this.formularioParente.get('valorParentesco')?.value;
+    parente.parentesco = this.formularioParente.get('parentesco')?.value;
+
+    let membro = new Membro();
+    membro.id = this.membro?.id;
+
+    parente.membro = membro;
+
+    return parente;
   }
 
   criarMembro(): Membro {
@@ -192,6 +220,7 @@ export class CadastroComponent implements OnInit {
         membro.id = this.membro.id;
 
         this.buscarContatosPorMembro(membro);
+        this.buscarParentesPorMembro(membro);
       },
       error: (error) => {
         console.log(`Erro ao tentar carregar membro: ${error}`);
@@ -207,6 +236,18 @@ export class CadastroComponent implements OnInit {
 
       error: (error) => {
         console.log('Erro ao buscar contatos: ' + error)
+      }
+    });
+  }
+
+  buscarParentesPorMembro(membro: Membro){
+    this.parenteService.buscarParentePorMembro(membro).subscribe({
+      next: (response) => {
+        this.parentes = response;
+      },
+
+      error: (error) => {
+        console.log('Erro ao buscar contatos: ' + error);
       }
     });
   }
@@ -227,6 +268,21 @@ export class CadastroComponent implements OnInit {
       });
     }else{
       console.log('>>>>>>>>>>> Formulário de contato inválido');
+    }
+  }
+
+  salvarParente(){
+    if(this.formularioParente.valid){
+      const parente = this.criarParente();
+      this.parenteService.salvarParente(parente).subscribe({
+        next: (response) => {
+          this.parentes = response;
+          alert('Parente salvo com sucesso !');
+        },
+        error: (error) => {
+          console.log('Erro ao tentar inserir parente: ' + error);
+        }
+      })
     }
   }
 
