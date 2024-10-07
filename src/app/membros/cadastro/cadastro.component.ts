@@ -10,6 +10,8 @@ import { Endereco } from 'src/app/model/core';
 import { IgrejaService } from 'src/app/igrejas/services/igreja.service';
 import { ConnectableObservable } from 'rxjs';
 import { FuncaoService } from 'src/app/igrejas/services/funcao.service';
+import { CargoService } from 'src/app/igrejas/services/cargo.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-cadastro',
@@ -35,6 +37,9 @@ export class CadastroComponent implements OnInit {
   parentes?: Parente[];
   igrejas?: Igreja[];
   funcoes?: Funcao[];
+  cargos?: Cargo[];
+
+  btnEdit = false;
 
   constructor(private formBuilder: FormBuilder, 
               private membroService: MembroService,
@@ -42,7 +47,8 @@ export class CadastroComponent implements OnInit {
               private rotas: ActivatedRoute,
               private parenteService: ParenteService,
               private igrejaService: IgrejaService,
-              private funcaoService: FuncaoService) {
+              private funcaoService: FuncaoService,
+              private cargoService: CargoService) {
 
       this.optionsSituacaoMembro = Object.keys(SituacaoMembro);
       this.optionsGenero = Object.keys(Genero);
@@ -60,8 +66,6 @@ export class CadastroComponent implements OnInit {
     this.configurarFormularioContato();
     this.configurarFormularioParente();
     this.configurarFormularioCargo();
-
-    console.log('=================================> Membro é undefined: ' + this.membro);
 
     //se veio do formulario de pesquisa
     const id = this.rotas.snapshot.params['id'];
@@ -85,6 +89,7 @@ export class CadastroComponent implements OnInit {
         this.formularioMembro.get('campoOrigem')?.disable();
       }
     });
+
   }
 
   buscarIgrejas(){
@@ -174,13 +179,18 @@ export class CadastroComponent implements OnInit {
 
   criarCargo(): Cargo{
     let cargo = new Cargo();
-    cargo.id = this.formularioCargo.get('id')?.value;
+    //cargo.id = this.formularioCargo.get('id')?.value;
+    cargo.id = {};
     cargo.dataPosse = this.formularioCargo.get('dataPosse')?.value;
     cargo.dataDestituicao = this.formularioCargo.get('dataDestituicao')?.value;
 
     let membro = new Membro();
     membro.id = this.membro?.id;
 
+    let funcao = new Funcao();
+    funcao.id = this.formularioCargo.get('funcao')?.value;
+
+    cargo.funcao = funcao;
     cargo.membro = membro;
     return cargo;
   }
@@ -242,6 +252,8 @@ export class CadastroComponent implements OnInit {
 
   criarContato(): Contato{
     let contato = new Contato();
+
+    contato.id = this.formularioContato.get('id')?.value;
     contato.tipoContato = this.formularioContato.get('tipoContato')?.value;
     contato.valor = this.formularioContato.get('valor')?.value;
 
@@ -268,6 +280,78 @@ export class CadastroComponent implements OnInit {
     }
   }
 
+  salvarCargo(){
+    if(this.formularioCargo.valid){
+      const cargo = this.criarCargo();
+      this.cargoService.salvarCargo(cargo).subscribe({
+        next: (response) => {
+          this.cargos = response;
+          alert('Posse realizada com sucesso');
+        },
+
+        error: (error) => {
+          console.log('Erro ao empossar membro em novo cargo: ' + error);
+        }
+      });
+    }
+  }
+
+  salvarContato(){
+    if(this.formularioContato.valid){
+      const contato = this.criarContato();
+
+      if(this.btnEdit){
+        this.contatoService.editar(contato).subscribe({
+          next: (response)=> {
+            alert('Contato editado com sucesso!!');
+            this.buscarContatosPorMembro(contato.membro);
+          },
+
+          error: (error)=> {
+            console.log(`Falha ao editar contato: ${error}`)
+          }
+        });
+
+        this.btnEdit = false;
+      }else{
+        this.contatoService.salvarContato(contato).subscribe({
+          next: (response) =>{
+            this.contatos = response;
+            alert('Contato salvo com sucesso!!');
+          },
+  
+          error: (error) => {
+            console.log(`Falha ao cadastrar contato: ${error}`)
+          }
+        });
+      }
+      this.formularioContato.reset();
+    }
+  }
+
+  salvarParente(){
+    if(this.formularioParente.valid){
+      const parente = this.criarParente();
+      this.parenteService.salvarParente(parente).subscribe({
+        next: (response) => {
+          this.parentes = response;
+          alert('Parente salvo com sucesso !');
+        },
+        error: (error) => {
+          console.log('Erro ao tentar inserir parente: ' + error);
+        }
+      })
+    }
+  }
+
+  editarContato(contato: Contato){
+    console.log(`===================================> Contato ID: ${contato.id}`)
+    this.formularioContato.get('id')?.setValue(contato.id);
+    this.formularioContato.get('tipoContato')?.setValue(contato.tipoContato);
+    this.formularioContato.get('valor')?.setValue(contato.valor);
+    this.btnEdit = true;
+  }
+
   buscarMembroPorId(id: number){
     this.membroService.buscarMembroPorId(id).subscribe({
       next: (response) => {
@@ -279,6 +363,7 @@ export class CadastroComponent implements OnInit {
 
         this.buscarContatosPorMembro(membro);
         this.buscarParentesPorMembro(membro);
+        this.buscarCargosPorMembro(membro);
       },
       error: (error) => {
         console.log(`Erro ao tentar carregar membro: ${error}`);
@@ -310,42 +395,16 @@ export class CadastroComponent implements OnInit {
     });
   }
 
-  salvarCargo(){
+  buscarCargosPorMembro(membro: Membro){
+    this.cargoService.buscarCargoPorMembro(membro).subscribe({
+      next: (response) => {
+        this.cargos = response;
+      },
 
-  }
-
-  salvarContato(){
-    if(this.formularioContato.valid){
-      const contato = this.criarContato();
-
-      this.contatoService.salvarContato(contato).subscribe({
-        next: (response) =>{
-          this.contatos = response;
-          alert('Contato salvo com sucesso!!');
-        },
-
-        error: (error) => {
-          console.log(`Falha ao cadastrar contato: ${error}`)
-        }
-      });
-    }else{
-      console.log('>>>>>>>>>>> Formulário de contato inválido');
-    }
-  }
-
-  salvarParente(){
-    if(this.formularioParente.valid){
-      const parente = this.criarParente();
-      this.parenteService.salvarParente(parente).subscribe({
-        next: (response) => {
-          this.parentes = response;
-          alert('Parente salvo com sucesso !');
-        },
-        error: (error) => {
-          console.log('Erro ao tentar inserir parente: ' + error);
-        }
-      })
-    }
+      error: (error) => {
+        console.log('Erro ao buscar cargos: ' + error);
+      }
+    });
   }
 
   deletarContato(id: number){

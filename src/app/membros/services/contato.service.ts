@@ -22,4 +22,8 @@ export class ContatoService {
   buscarContatoPorMembro(membro: Membro){
     return this.http.post<Contato[]>(`${this._URL}/membro`, membro);
   }
+
+  editar(contato: Contato){
+    return this.http.put<Contato[]>(`${this._URL}/${contato.id}`, contato);
+  }
 }

@@ -48,7 +48,7 @@
                 <div class="row mb-3">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header text-white bg-dark"><h5>Identificação</h5></div>
+                            <div class="card-header text-white" style="background-color: #00AA9E;"><h5>Identificação</h5></div>
                             <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-2">
@@ -71,7 +71,6 @@
                                         <select name="" class="form-select form-select-sm" id="estadoCivil" formControlName = "estadoCivil">
                                             <option value="">Selecione um opção</option>
                                             <option *ngFor="let estadoCivil of optionsEstadoCivil" [value]="estadoCivil">{{estadoCivil}}</option>
-                    
                                         </select>
                                     </div>
                                 </div>
@@ -108,7 +107,7 @@
                 <div class="row mb-3">
                     <div class="col-12">
                         <div class="card" formGroupName = "endereco">
-                            <div class="card-header text-white bg-dark"><h5>Endereço</h5></div>
+                            <div class="card-header text-white" style="background-color: #00AA9E;"><h5>Endereço</h5></div>
                             <div class="card-body">
 
                                 <div class="row mb-2">    
@@ -176,7 +175,7 @@
                 <div class="row mb-3">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header text-white bg-dark"><h5>Informações gerais</h5></div>
+                            <div class="card-header text-white" style="background-color: #00AA9E;"><h5>Informações gerais</h5></div>
                             <div class="card-body">
 
                                 <div class="row mb-4">
@@ -290,7 +289,7 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header text-white" style="background-color: #00AA9E;">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">{{membro?.nome}}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -312,13 +311,13 @@
                         </div>
                     
                         <div class="row mb-3">
-                            <div class="col-2">
+                            <div class="col-3">
                                 <button type="submit" class="btn btn-primary btn-sm" id="btnAddContato" [disabled]="formularioContato.invalid">Adicionar</button>
                             </div>
                         </div>
                     </form>
                     <div class="card">
-                        <div class="card-header text-white bg-dark"><h5>Contatos</h5></div>
+                        <div class="card-header text-white" style="background-color: #00AA9E;"><h5>Contatos</h5></div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
@@ -334,7 +333,7 @@
                                                 <td>{{contato.tipoContato}}</td>
                                                 <td>{{contato.valor}}</td>
                                                 <td class="text-center">
-                                                    <a class="btn btn-primary btn-sm" href="#">
+                                                    <a class="btn btn-primary btn-sm" (click)="editarContato(contato)">
                                                         <i class="bi bi-pen"></i>
                                                     </a>
                                                     &nbsp;
@@ -363,7 +362,7 @@
     <div class="modal fade" id="funcaoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header text-white" style="background-color: #00AA9E;">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">{{membro?.nome}}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -391,14 +390,14 @@
                     
                         <div class="row mb-3">
                             <div class="col-2">
-                                <button type="submit" class="btn btn-primary btn-sm" id="btnAddContato" [disabled]="formularioContato.invalid">Adicionar</button>
+                                <button type="submit" class="btn btn-primary btn-sm" id="btnAddContato" [disabled]="formularioCargo.invalid">Adicionar</button>
                             </div>
                         </div>
                     </form>
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header text-white bg-dark"><h5>Lista de funções</h5></div>
+                                <div class="card-header text-white" style="background-color: #00AA9E;"><h5>Lista de funções</h5></div>
             
                                 <div class="card-body">
                                     <table class="table table-striped table-sm table-bordered">
@@ -412,10 +411,10 @@
                                         </thead>
             
                                         <tbody>
-                                            <tr>
-                                                <td>Pastor</td>
-                                                <td>2024-07-09</td>
-                                                <td></td>
+                                            <tr *ngFor="let cargo of cargos">
+                                                <td>{{cargo.funcao.nome}}</td>
+                                                <td>{{cargo.dataPosse}}</td>
+                                                <td>{{cargo.dataDestituicao}}</td>
                                                 <td class="text-center">
                                                     <a class="btn btn-primary btn-sm" href="#">
                                                         <i class="bi bi-pen"></i>
@@ -447,7 +446,7 @@
     <div class="modal fade" id="RelacionamentoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header text-white" style="background-color: #00AA9E;">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">{{membro?.nome}}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -477,7 +476,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header text-white bg-dark"><h5>Parentes</h5></div>
+                                <div class="card-header text-white" style="background-color: #00AA9E;"><h5>Parentes</h5></div>
             
                                 <div class="card-body">
                                     <table class="table table-striped table-sm table-bordered">

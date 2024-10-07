@@ -25,8 +25,14 @@ export class Funcao {
 }
 
 export class Cargo {
-    id?: number;
+    id?: CargoFuncaoId;
     dataPosse!: Date;
     dataDestituicao?: Date
-    membro!: Membro
+    membro!: Membro;
+    funcao!: Funcao;
+}
+
+export class CargoFuncaoId {
+    membroId?: number;
+    funcaoId?: number;
 }

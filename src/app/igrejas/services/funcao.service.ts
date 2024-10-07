@@ -14,8 +14,4 @@ export class FuncaoService {
     buscarFuncoes(){
         return this.http.get<Funcao[]>(this._URL);
     }
-
-    salvarCargo(cargo: Cargo){
-        return this.http.post<Cargo[]>(this._URL, cargo);
-    }
 }

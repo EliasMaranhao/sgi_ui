@@ -3,7 +3,7 @@
         <div class="row mb-2">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header text-white bg-dark"><h5>Buscar</h5></div>
+                    <div class="card-header text-white" style="background-color: #00AA9E;"><h5>Buscar</h5></div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12">
@@ -20,7 +20,7 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="card">
-                <div class="card-header text-white bg-dark"><h5>Membros</h5></div>
+                <div class="card-header text-white" style="background-color: #00AA9E;"><h5>Membros</h5></div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12">
@@ -36,17 +36,16 @@
 
                                 <tbody>
                                     <tr *ngFor="let membro of membros">
-                                        <td>{{membro.id}}</td>
+                                        <td class="text-center">{{membro.id}}</td>
                                         <td>{{membro.nome}}</td>
                                         <td>{{membro.situacaoMembro}}</td>
                                         <td>{{membro.dataBatismo}}</td>
-                                        <td>
-                                            &nbsp;
+                                        <td class="text-center">
                                             <a class="btn btn-primary btn-sm" [routerLink]="['/membro', membro.id]">
                                                 <i class="bi bi-pen"></i>
                                             </a>
                                             &nbsp;
-                                            <button type="button" class="btn btn-primary btn-sm">
+                                            <button type="button" class="btn btn-danger btn-sm">
                                                 <i class='bi bi-trash'></i>
                                             </button>
                                         </td>
