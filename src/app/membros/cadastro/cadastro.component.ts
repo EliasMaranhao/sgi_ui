@@ -3,15 +3,13 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MembroService } from '../services/membro.service';
 import { Contato, Documento, EstadoCivil, Genero, Membro, Parente, SituacaoMembro, TipoContato, TipoDocumento, TipoParentesco } from './model/membro';
 import { ContatoService } from '../services/contato.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ParenteService } from '../services/parente.service';
 import { Cargo, Funcao, Igreja } from 'src/app/igrejas/model/igreja';
 import { Endereco } from 'src/app/model/core';
 import { IgrejaService } from 'src/app/igrejas/services/igreja.service';
-import { ConnectableObservable } from 'rxjs';
 import { FuncaoService } from 'src/app/igrejas/services/funcao.service';
 import { CargoService } from 'src/app/igrejas/services/cargo.service';
-import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-cadastro',
@@ -39,7 +37,9 @@ export class CadastroComponent implements OnInit {
   funcoes?: Funcao[];
   cargos?: Cargo[];
 
-  btnEdit = false;
+  contatoEdit = false;
+  cargoEdit = false;
+
 
   constructor(private formBuilder: FormBuilder, 
               private membroService: MembroService,
@@ -179,8 +179,12 @@ export class CadastroComponent implements OnInit {
 
   criarCargo(): Cargo{
     let cargo = new Cargo();
-    //cargo.id = this.formularioCargo.get('id')?.value;
-    cargo.id = {};
+    
+    cargo.id = {
+      'funcaoId': this.formularioCargo.get('funcao')?.value,
+      'membroId' : this.membro?.id
+    };
+
     cargo.dataPosse = this.formularioCargo.get('dataPosse')?.value;
     cargo.dataDestituicao = this.formularioCargo.get('dataDestituicao')?.value;
 
@@ -267,32 +271,56 @@ export class CadastroComponent implements OnInit {
   salvar(){
     if(this.formularioMembro.valid){
       const membro = this.criarMembro();
+      if(membro.id){
+        this.membroService.editarMembro(membro.id, membro).subscribe({
+          next: (response) => {
+            this.membro = response;
+            alert('Membro atualizado com sucesso!!');
+          },
 
-      this.membroService.salvarMembro(membro).subscribe({
-        next: (response) => {
-          this.membro = response;
-          alert('Membro salvo com sucesso!!');
-        },
-        error: (error) => {
-          console.log(error);
-        }
-      })
+          error: (error) =>{
+            console.log('Nao possivel atualizar o registro: ' + error);
+          }
+        });
+      }else{
+        this.membroService.salvarMembro(membro).subscribe({
+          next: (response) => {
+            this.membro = response;
+            alert('Membro salvo com sucesso!!');
+          },
+          error: (error) => {
+            console.log('Nao possivel salvar o registro: ' + error);
+          }
+        });
+      }
     }
   }
 
   salvarCargo(){
     if(this.formularioCargo.valid){
       const cargo = this.criarCargo();
-      this.cargoService.salvarCargo(cargo).subscribe({
-        next: (response) => {
-          this.cargos = response;
-          alert('Posse realizada com sucesso');
-        },
+      if(this.cargoEdit){
+        this.cargoService.editarCargo(cargo).subscribe({
+          next: (response) => {
+            alert('Cargo editado com sucesso');
+            this.buscarCargosPorMembro(cargo.membro);
+          }
+        });
+      }else{
+        this.cargoService.salvarCargo(cargo).subscribe({
+          next: (response) => {
+            this.cargos = response;
+            alert('Posse realizada com sucesso');
+            this.buscarCargosPorMembro(cargo.membro);
+          },
+  
+          error: (error) => {
+            console.log('Erro ao empossar membro em novo cargo: ' + error);
+          }
+        });
+      }
 
-        error: (error) => {
-          console.log('Erro ao empossar membro em novo cargo: ' + error);
-        }
-      });
+      this.formularioCargo.reset();
     }
   }
 
@@ -300,7 +328,7 @@ export class CadastroComponent implements OnInit {
     if(this.formularioContato.valid){
       const contato = this.criarContato();
 
-      if(this.btnEdit){
+      if(this.contatoEdit){
         this.contatoService.editar(contato).subscribe({
           next: (response)=> {
             alert('Contato editado com sucesso!!');
@@ -312,7 +340,7 @@ export class CadastroComponent implements OnInit {
           }
         });
 
-        this.btnEdit = false;
+        this.contatoEdit = false;
       }else{
         this.contatoService.salvarContato(contato).subscribe({
           next: (response) =>{
@@ -345,11 +373,18 @@ export class CadastroComponent implements OnInit {
   }
 
   editarContato(contato: Contato){
-    console.log(`===================================> Contato ID: ${contato.id}`)
     this.formularioContato.get('id')?.setValue(contato.id);
     this.formularioContato.get('tipoContato')?.setValue(contato.tipoContato);
     this.formularioContato.get('valor')?.setValue(contato.valor);
-    this.btnEdit = true;
+    this.contatoEdit = true;
+  }
+
+  editarCargo(cargo: Cargo){
+    this.formularioCargo.get('id')?.setValue(cargo.id);
+    this.formularioCargo.get('dataPosse')?.setValue(cargo.dataPosse);
+    this.formularioCargo.get('dataDestituicao')?.setValue(cargo.dataDestituicao);
+    this.formularioCargo.get('funcao')?.setValue(cargo.funcao.id);
+    this.cargoEdit = true;
   }
 
   buscarMembroPorId(id: number){
@@ -416,10 +451,25 @@ export class CadastroComponent implements OnInit {
         membro.id = this.membro?.id;
 
         this.buscarContatosPorMembro(membro);
-        console.log(response);
       },
       error: (error) => {
         console.log(`Erro ao tentar remover contato: ${error}`);
+      }
+    });
+  }
+
+  deletarCargo(cargo: Cargo){
+    this.cargoService.deletarCargo(cargo).subscribe({
+      next: (response) => {
+        alert("Cargo removido");
+
+        let membro = new Membro();
+        membro.id = this.membro?.id;
+
+        this.buscarCargosPorMembro(membro);
+      },
+      error: (error) => {
+        console.log(`Erro ao tentar remover cargo: ${error}`);
       }
     });
   }

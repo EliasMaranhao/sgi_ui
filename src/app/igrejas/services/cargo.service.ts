@@ -21,4 +21,12 @@ export class CargoService {
     buscarCargoPorMembro(membro: Membro){
         return this.http.post<Cargo[]>(`${this._URL}/membro`, membro);
     }
+
+    editarCargo(cargo: Cargo){
+        return this.http.put<Cargo>(`${this._URL}/edit/${cargo.id?.membroId}/${cargo.id?.funcaoId}`, cargo);
+    }
+
+    deletarCargo(cargo: Cargo){
+        return this.http.delete<Cargo>(`${this._URL}/delete/${cargo.id?.membroId}/${cargo.id?.funcaoId}`);
+    }
 }

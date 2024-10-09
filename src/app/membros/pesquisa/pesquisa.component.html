@@ -1,21 +1,21 @@
 <div class="container">
-    <form [formGroup]="formularioMembroPesquisa">
-        <div class="row mb-2">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header text-white" style="background-color: #00AA9E;"><h5>Buscar</h5></div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12">
-                                <label for="nome">Nome</label>
-                                <input type="text" class="form-control form-control-sm" id="nome" formControlName="nome" />
-                            </div>
+    
+    <div class="row mb-2">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header text-white" style="background-color: #00AA9E;"><h5>Buscar</h5></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="nome">Nome</label>
+                            <input type="text" class="form-control form-control-sm" id="nome" [(ngModel)]="membroFiltro.nome" (input)="pesquisar()"/>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+   
 
     <div class="row mb-3">
         <div class="col-12">
@@ -54,11 +54,38 @@
                             </table>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-1">
+                            <select name="" class="form-select form-select-sm inline" id="qtdRegistrosPagina" [(ngModel)]="membroFiltro.size" (change)="pesquisar()">
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                            </select>
+                        </div>
+                        <div class="col-11">
+                            <nav aria-label="Navegação de página exemplo">
+                                <ul class="pagination justify-content-end">
+                                    <li class="page-item">
+                                        <button class=" btn btn-sm page-link" href="#" [disabled]="primeiro" (click)="praTras()">
+                                            <i class="bi bi-caret-left-square-fill"></i>
+                                        </button>
+                                    </li>
+                                    &nbsp;
+                                    <li class="page-item">
+                                        <button class="btn btn-sm page-link" href="#" [disabled]="ultimo" (click)="praFrente()">
+                                            <i class="bi bi-caret-right-square-fill"></i>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <a class="btn btn-primary btn-sm" routerLink="novo">Novo membro</a>
+                   
                 </div>
             </div>
         </div>
     </div>
-
-    <a class="btn btn-primary btn-sm" routerLink="novo">Novo</a>
 </div>
 

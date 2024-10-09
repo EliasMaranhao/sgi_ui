@@ -24,6 +24,6 @@ export class ContatoService {
   }
 
   editar(contato: Contato){
-    return this.http.put<Contato[]>(`${this._URL}/${contato.id}`, contato);
+    return this.http.put<Contato>(`${this._URL}/${contato.id}`, contato);
   }
 }

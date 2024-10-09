@@ -9,6 +9,7 @@ import { PesquisaComponent } from './membros/pesquisa/pesquisa.component';
 import { CadastroComponent } from './membros/cadastro/cadastro.component';
 import { AppRoutingModule } from './app-routing.module';
 import { UsuarioModule } from './usuario/usuario.module';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,7 @@ import { UsuarioModule } from './usuario/usuario.module';
     AppRoutingModule,
     UsuarioModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

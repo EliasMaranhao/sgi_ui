@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MembroService } from '../services/membro.service';
+import { MembroFiltro, MembroService } from '../services/membro.service';
 import { Membro } from '../cadastro/model/membro';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -9,14 +9,23 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./pesquisa.component.css']
 })
 export class PesquisaComponent implements OnInit {
+
+  totalPaginas = 0;
+  totalRegistros = 0;
+
+  primeiro = true;
+  ultimo = false;
+
+  membroFiltro = new MembroFiltro();
+
   membros!: Membro[];
   formularioMembroPesquisa!: FormGroup;
 
   constructor(private formBuilder: FormBuilder, 
               private membroService: MembroService) { 
 
-    console.log('CHAMOU INIT >>>>>>>>>>>>>>>>>>>>>>>>>>')
-    this.buscarMembros();
+    //this.buscarMembros();
+    this.pesquisar();
   }
 
   ngOnInit(): void {
@@ -26,7 +35,7 @@ export class PesquisaComponent implements OnInit {
   configurarFomularioMembroPesquisa(){
     this.formularioMembroPesquisa = this.formBuilder.group({
       nome: [null, Validators.required]
-    })
+    });
   }
 
   buscarMembros(){
@@ -37,6 +46,29 @@ export class PesquisaComponent implements OnInit {
       error: (error) => {
         console.log('Falhou: ' + error);
       }
-    })
+    });
+  }
+
+  pesquisar(){
+    this.membroService.pesquisar(this.membroFiltro).subscribe({
+      next: (response: any) => {
+        this.membros = response.content;
+        this.primeiro = response.first;
+        this.ultimo = response.last;
+      }, 
+      error: (error) => {
+        console.log('Falhou: ' + error);
+      }
+    });
+  }
+
+  praFrente(){
+    this.membroFiltro.page = this.membroFiltro.page + 1;
+    this.pesquisar();
+  }
+
+  praTras(){
+    this.membroFiltro.page = this.membroFiltro.page - 1;
+    this.pesquisar();
   }
 }

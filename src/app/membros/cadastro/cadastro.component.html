@@ -211,8 +211,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
-
+                                <div class="row mb-4">
                                     <div class="col-6">
                                         <div class="row mb-2">
                                             <span class="h6">Veio de outra denominação</span>
@@ -234,7 +233,9 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
+                                <div class="row">
                                     <div class="col-6">
                                         <div class="row mb-2">
                                             <span class="h6">Veio de outro campo</span>
@@ -416,11 +417,11 @@
                                                 <td>{{cargo.dataPosse}}</td>
                                                 <td>{{cargo.dataDestituicao}}</td>
                                                 <td class="text-center">
-                                                    <a class="btn btn-primary btn-sm" href="#">
+                                                    <button class="btn btn-primary btn-sm" (click)="editarCargo(cargo)">
                                                         <i class="bi bi-pen"></i>
-                                                    </a>
+                                                    </button>
                                                     &nbsp;
-                                                    <button type="button" class="btn btn-danger btn-sm">
+                                                    <button type="button" class="btn btn-danger btn-sm" (click)="deletarCargo(cargo)">
                                                         <i class='bi bi-trash'></i>
                                                     </button>
                                                 </td>
